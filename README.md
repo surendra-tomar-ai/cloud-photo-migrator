@@ -6,6 +6,11 @@ It's a thin, battle-tested wrapper around [rclone](https://rclone.org). rclone d
 
 It was built during a real migration of **~47,000 photos and videos (≈400 GiB)** from Jottacloud to Google Drive, and every feature below exists because that migration needed it. After it finished, the verifier confirmed every file at the destination against the source.
 
+**Result of `verify.ps1` after the real migration:**
+
+<img width="527" height="103" alt="image" src="https://github.com/user-attachments/assets/e71623fb-e13a-4513-8fc2-153619bf9686" />
+
+
 ## What it does
 
 - **Copies month by month, oldest first.** It works through `YYYY/MM` folders (the way Jottacloud and many photo apps store photos) one at a time, so you can see progress and stop at any month. You can also copy a whole folder in one go.
