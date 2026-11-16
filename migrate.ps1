@@ -37,11 +37,13 @@ param(
     [int]$MaxAttempts,
     [string]$StateDir,
     [string]$Rclone,
-    [string]$ConfigFile = (Join-Path $PSScriptRoot 'config.psd1'),
+    [string]$ConfigFile,   # default: config.psd1 next to this script
     [switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
+# $PSScriptRoot is empty inside param() defaults on Windows PowerShell 5.1, so resolve the default here.
+if (-not $ConfigFile) { $ConfigFile = Join-Path $PSScriptRoot 'config.psd1' }
 . (Join-Path $PSScriptRoot 'lib\common.ps1')
 
 $s = Get-MigratorSettings -Bound $PSBoundParameters -ConfigFile $ConfigFile -ScriptRoot $PSScriptRoot
