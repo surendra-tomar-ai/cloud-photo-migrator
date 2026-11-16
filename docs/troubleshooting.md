@@ -69,6 +69,25 @@ If it's *still* slow, your internet's upload speed is the limit. It varied 10× 
 
 Windows Update can restart the computer outside your "active hours". Before a multi-day run, pause updates (Settings → Windows Update → Pause for 1 week) and keep the laptop plugged in with the lid open. Then run `start.cmd` again. If a VPN reconnected after the restart, disconnect it first.
 
+## `Duplicate object/directory found in destination` (Google Drive)
+
+**Cause:** Google Drive allows two items with the same name in one folder. Uploads that were interrupted and restarted (outages, restarts) can occasionally leave a second copy of a file, or a second folder with the same name. In the original run, this happened once to a file and once to a folder, out of about 47,000 files.
+
+**Check (changes nothing):**
+
+```powershell
+rclone dedupe list "gdrive:From Jottacloud/Photos"
+```
+
+**Fix:** merge the duplicate folders, and delete extra copies of files whose content is identical:
+
+```powershell
+rclone dedupe --dedupe-mode newest --by-hash "gdrive:From Jottacloud/Photos" --dry-run   # preview
+rclone dedupe --dedupe-mode newest "gdrive:From Jottacloud/Photos"
+```
+
+Then run `verify.ps1` again.
+
 ## I want to redo a month
 
 Delete that month's line from `state\done.txt` and run again. Only missing or changed files are copied.
