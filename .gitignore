@@ -1,0 +1,12 @@
+# Your settings and progress - never commit these
+config.psd1
+state/
+
+# rclone config holds your cloud login tokens
+rclone.conf
+
+# rclone binary if you drop it next to the scripts
+rclone.exe
+rclone
+
+*.log
