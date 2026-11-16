@@ -60,6 +60,15 @@ Remove-Item "$dst/2023/01/05/IMG_2.jpg"
 Assert ($LASTEXITCODE -eq 1) 'verify fails when a file is missing'
 Assert ((Get-Content "$state/verify-missing.txt") -contains '2023/01/05/IMG_2.jpg') 'verify lists the missing file'
 
+# Default config path (no -ConfigFile), as start.cmd runs it. Uses a clean copy so a developer's own config.psd1 isn't read.
+$copy = Join-Path $work 'copy'; New-Item -ItemType Directory -Force "$copy\lib" | Out-Null
+Copy-Item (Join-Path $root 'migrate.ps1'), (Join-Path $root 'verify.ps1') $copy
+Copy-Item (Join-Path $root 'lib\common.ps1') "$copy\lib"
+"@{ Source = '$src'; Destination = '$(Join-Path $work 'dst2')'; To = '2022-12' }" | Set-Content "$copy\config.psd1"
+& powershell -NoProfile -ExecutionPolicy Bypass -File "$copy\migrate.ps1" *> $null
+Assert ($LASTEXITCODE -eq 0 -and (Test-Path "$work/dst2/2022/12/24/IMG_1.jpg") -and -not (Test-Path "$work/dst2/2023")) 'default config.psd1 next to the script is used'
+Assert (Test-Path "$copy/state/done.txt") 'default state folder is created next to the script'
+
 Remove-Item $work -Recurse -Force
 Write-Host ""
 if ($script:failed) { Write-Host "$script:failed test(s) failed" -ForegroundColor Red; exit 1 }
